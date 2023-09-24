@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { type GetServerSidePropsContext } from "next";
 import {
@@ -6,6 +7,7 @@ import {
   type NextAuthOptions,
 } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
+import CognitoProvider from "next-auth/providers/cognito";
 
 import { env } from "~/env.mjs";
 import { db } from "~/server/db";
@@ -37,21 +39,39 @@ declare module "next-auth" {
  * @see https://next-auth.js.org/configuration/options
  */
 export const authOptions: NextAuthOptions = {
-  callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
-  },
-  adapter: PrismaAdapter(db),
+  debug: true,
+  secret: "+xoOfHJuQtCgEahUvJq4SJGB5rLJPeO/M28RbzkRUgo=",
+  // callbacks: {
+  //   session: ({ session, user }) => ({
+  //     ...session,
+  //     user: {
+  //       ...session.user,
+  //       id: user.id,
+  //     },
+  //   }),
+  // },
+  // adapter: PrismaAdapter(db),
   providers: [
-    DiscordProvider({
-      clientId: env.DISCORD_CLIENT_ID,
-      clientSecret: env.DISCORD_CLIENT_SECRET,
+    // CognitoProvider({
+    //   clientId: "1om2i227s52mkpl4t256637ba5",
+    //   clientSecret: process.env.COGNITO_CLIENT_SECRET,
+    //   issuer: process.env.COGNITO_ISSUER,
+    // }),
+    CognitoProvider({
+      name: "cognito",
+      clientId: "2suj11499pf203d7a1tamsfql0",
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      clientSecret: "1gngqg7isk11789gm84k5lnuuvk1cn3g8nf4i5041ukprgfdse3i",
+      // issuer: "next-auth-demo.auth.ap-southeast-1.amazoncognito.com",
+      issuer:
+        "https://cognito-idp.ap-southeast-1.amazonaws.com/ap-southeast-1_2tevBbomk",
+      // client: {
+      //   token_endpoint_auth_method: "none",
+      // },
     }),
+
+    // "AWS_USER_POOLS_ID": "ap-southeast-1_RNMlC2yGY",
+    // "AWS_USER_POOLS_WEB_CLIENT_ID": "1om2i227s52mkpl4t256637ba5",
     /**
      * ...add more providers here.
      *
